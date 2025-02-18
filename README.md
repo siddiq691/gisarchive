@@ -1,4 +1,4 @@
-Overview
+Data Scraping and Satellite Imaging
 
 This project is designed for efficient data scraping and satellite imaging processing. It collects and processes large-scale geospatial data from online sources, integrates satellite imagery, and performs analytical operations.
 
