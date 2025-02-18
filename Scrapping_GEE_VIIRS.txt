@@ -1,0 +1,17 @@
+var dataset = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
+                  .filter(ee.Filter.date('2023-01-01', '2023-10-22'))
+                  .filterBounds(geometry2)
+                  .max();
+var nighttime = dataset.select('avg_rad');
+var nighttimeVis = {min: 0.0, max: 100.0};
+var dataset = dataset.toUint32();
+
+Map.addLayer(nighttime, nighttimeVis, 'Nighttime');
+
+Export.image.toDrive({
+ image:dataset,
+ description:'nighttime_kabsmg',
+ folder : 'LANDSAT8',
+ scale: 30,
+ region: geometry2,
+ fileFormat: 'GeoTIFF'});

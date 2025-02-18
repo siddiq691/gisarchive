@@ -1,0 +1,26 @@
+
+Map.addLayer(geometry)
+
+var maskL8 = function(image) {
+ var qa = image.select('BQA');
+ var mask = qa.bitwiseAnd(1 << 4).eq(0);
+ return image.updateMask(mask);
+}
+
+var image = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA')
+.filterDate('2021-01-01','2021-12-31')
+.filterBounds(geometry)
+// .median()
+// map(maskL8)
+// .map(addNDVI)
+.sort('CLOUD_COVER',false)
+
+var image_number = image.size()
+print(image_number)
+
+var image_sort = ee.Image(image.sort('CLOUD_COVER').first())
+print(image_sort)
+
+var image_final = ee.Image('LANDSAT/LC08/C01/T1_TOA/LC08_121065_20210605')
+.select (["B2","B3","B4","B5"])
+Map.addLayer(image_final.clip(geometry))

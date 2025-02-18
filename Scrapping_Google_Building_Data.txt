@@ -1,0 +1,14 @@
+// Visualization of GOOGLE/Research/open-buildings/v2/polygons.
+
+var t = ee.FeatureCollection('GOOGLE/Research/open-buildings/v2/polygons');
+var t = t.filterBounds(geometry);
+var t_060_065 = t.filter('confidence >= 0.60');
+
+Map.addLayer(t_060_065, {color: 'FF0000'}, 'Buildings confidence [0.60)');
+Map.setOptions('SATELLITE');
+
+Export.table.toDrive({
+ collection: t,
+ description:'persiljabodetabek',
+ folder : 'LANDSAT8',
+ fileFormat: 'GEOJSON'});

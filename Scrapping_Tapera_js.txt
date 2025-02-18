@@ -1,0 +1,55 @@
+const axios = require('axios');
+const fs = require('fs');
+const converter = require('json-2-csv');
+
+const JUMLAH_HALAMAN=1
+
+async function getData () {
+  let dataPerumahan=[]
+  for(let i=1;i<=JUMLAH_HALAMAN;i++) {
+    await axios.get(`https://sikumbang.tapera.go.id/ajax/lokasi/search?sort=terbaru&page=${i}&limit=18`).then((response)=> {
+      dataPerumahan.push(response.data.data)
+    }).catch((err)=> {
+      console.log(err)
+    })
+  }
+  // console.log(dataPerumahan[0])
+
+  const kabupatenSelect= 'KAB BINTAN'
+
+  let dataAmbil=[]
+  for (let i=0;i<JUMLAH_HALAMAN;i++) {
+    dataPerumahan[i].forEach((rumah)=> {
+      if (rumah.wilayah.kabupaten == kabupatenSelect) {
+        dataAmbil.push({
+          Nama: rumah.namaPerumahan,
+          Jenis: rumah.jenisPerumahan,
+          Koordinat: rumah.koordinatPerumahan,
+          jumlahUnit: rumah.jumlahUnit,
+          provinsi: rumah.wilayah.provinsi,
+          kabupaten: rumah.wilayah.kabupaten,
+        })
+      }
+    })
+  }
+
+  
+  // let dataKabupaten=[]
+  // dataAmbil.forEach((rumah)=> {
+  //   if (rumah.kabupaten == kabupatenSelect) {
+  //     dataKabupaten.push(rumah)
+  //   }
+  // })
+
+  const csv = await converter.json2csv(dataAmbil);
+  
+  fs.writeFile("Siddiq Batu.csv", csv, (err)=> {
+    if (err) {
+      console.log("Error writing File")
+    } else {
+      console.log("File written successfully\n"); 
+    }
+  })
+}
+
+getData();
